@@ -94,29 +94,62 @@ void unionColaspila(Nodo* frente1, Nodo* fin1 , Nodo* frente2, Nodo* fin2, Nodo*
         desencolar(frente2, fin2, frente2->dato);
     }
 }
+
+// TODO aprender semantica de esta funcion
+void insertarOrdenado(Nodo* &lista, int n) {
+    Nodo* nuevoNodo = new Nodo();
+    nuevoNodo->dato = n;
+    nuevoNodo->siguiente = NULL;
+    if (lista == NULL) {
+        lista = nuevoNodo;
+    } else {
+        Nodo* aux1 = lista;
+        Nodo* aux2 = NULL;
+        while (aux1 != NULL && aux1->dato < n) {
+            aux2 = aux1;
+            aux1 = aux1->siguiente;
+        }
+        if (aux2 == NULL) {
+            nuevoNodo->siguiente = lista;
+            lista = nuevoNodo;
+        } else {
+            aux2->siguiente = nuevoNodo;
+            nuevoNodo->siguiente = aux1;
+        }
+    }
+}
+void listadedoslistas(Nodo* lista1, Nodo* lista2, Nodo* &lista) {
+    Nodo* aux = lista1;
+    while (aux != NULL) {
+        insertarOrdenado(lista, aux->dato);
+        aux = aux->siguiente;
+    }
+    aux = lista2;
+    while (aux != NULL) {
+         insertarOrdenado(lista, aux->dato);
+        aux = aux->siguiente;
+    }
+}
 int main() {
-Nodo* frente1 = NULL;
-    Nodo* fin1 = NULL;
-    Nodo* frente2 = NULL;
-    Nodo* fin2 = NULL;
+
     Nodo* lista = NULL;
+    Nodo* lista1 = NULL;
+    Nodo* lista2 = NULL;
 
-    // Encolar algunos elementos en la primera cola
-    encolar(frente1, fin1, 1);
-    encolar(frente1, fin1, 2);
-    encolar(frente1, fin1, 3);
+    insertarAlFinal(lista1, 1);
+    insertarAlFinal(lista1, 3);
+    insertarAlFinal(lista1, 5);
+    insertarAlFinal(lista1, 7);
 
-    // Encolar algunos elementos en la segunda cola
-    encolar(frente2, fin2, 4);
-    encolar(frente2, fin2, 5);
-    encolar(frente2, fin2, 6);
+    insertarAlFinal(lista2, 2);
+    insertarAlFinal(lista2, 4);
+    insertarAlFinal(lista2, 6);
+    insertarAlFinal(lista2, 8);
 
-    // Unir las dos colas en la pila
-     // Unir las dos colas en la lista
-    unionColasLista(frente1, fin1, frente2, fin2, lista);
+    listadedoslistas(lista1, lista2, lista);
 
-    // Mostrar los elementos de la pila
+    std::cout << "Lista: ";
     listar(lista);
-    
+
 
     return 0;}
