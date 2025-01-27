@@ -130,6 +130,103 @@ void listadedoslistas(Nodo* lista1, Nodo* lista2, Nodo* &lista) {
         aux = aux->siguiente;
     }
 }
+// punto 2
+struct Reservas
+{
+    int codHOtel;
+    int cantReservas;
+    int cantDiasDisponibles;
+};
+
+//infor lista
+struct InfoLista
+{
+    int codHotellista;
+    int cantdiaslista;
+};
+
+struct NodoReservas
+{
+    Reservas info;
+    NodoReservas* siguiente;
+};
+
+//punto 3
+//PUNTO 3
+struct Producto{
+    int codigoProducto;
+    int peso;
+    char tipo;
+    int cantidadEnStock;
+};
+
+struct NodoProducto{
+    Producto producto;
+    NodoProducto* sig;
+};
+void cargarArchivo(char nombreArchivo[], NodoProducto* lista){
+    FILE* archivo = fopen(nombreArchivo, "wb");
+    Producto producto;
+    while(lista){
+        producto = lista->producto;
+        fwrite(&producto, sizeof(Producto), 1, archivo);
+        lista = lista->sig;
+    }
+
+    fclose(archivo);
+
+}
+
+void insertarProductoOrdenado(NodoProducto*& lista, Producto producto){ 
+    NodoProducto* nuevo = new NodoProducto;
+    NodoProducto* anterior; 
+
+    nuevo->producto = producto; 
+
+    if(!lista || lista->producto.codigoProducto > producto.codigoProducto){ 
+        nuevo->sig = lista;   
+        lista = nuevo; 
+    }else{ 
+        anterior = lista; 
+
+        while(anterior->sig && anterior->sig->producto.codigoProducto <= producto.codigoProducto){
+            anterior = anterior->sig; 
+        }   
+
+        nuevo->sig = anterior->sig; 
+        anterior->sig = nuevo; 
+    } 
+} 
+
+NodoProducto* listaProductosSinStock(char nombreArchivo[]){
+    NodoProducto* lista;
+    FILE* archivo = fopen(nombreArchivo, "rb");
+    Producto producto;
+
+    while(fread(&producto, sizeof(Producto), 1, archivo)){
+        if(producto.cantidadEnStock == 0){
+            insertarProductoOrdenado(lista, producto);
+        }
+    }
+    fclose(archivo);
+
+    return lista;
+}
+
+NodoProducto* listaProductosPesados(char nombreArchivo[]){
+    NodoProducto* lista;
+    FILE* archivo = fopen(nombreArchivo, "rb");
+    Producto producto;
+
+    while(fread(&producto, sizeof(Producto), 1, archivo)){
+        if(producto.peso > 100 && producto.tipo == 'B'){
+            insertarProductoOrdenado(lista, producto);
+        }
+    }
+    fclose(archivo);
+
+    return lista;
+}
 int main() {
 
     Nodo* lista = NULL;
@@ -150,6 +247,33 @@ int main() {
 
     std::cout << "Lista: ";
     listar(lista);
+    // punto 2
+    NodoReservas *listaReservas = NULL;
+    Reservas infoReservas [] = {
+        {1, 5, 10},
+        {2, 3, 5},
+        {3, 7, 15},
+        {4, 2, 3},
+        {5, 4, 8}
+    };
+    // codhotel,cantidad,cantidad idas disopo
+    while (listaReservas != NULL) {
+    int codigohotel = listaReservas->info.codHOtel;
+    int cantReservas = listaReservas->info.cantReservas;
 
+    if (infoReservas->codHOtel == codigohotel &&  infoReservas->cantDiasDisponibles >= cantReservas) {
+        infoReservas->cantReservas = infoReservas->cantReservas - cantReservas;
+    }
+
+    NodoReservas *aux = listaReservas->siguiente;
+    }
+    // punto 3
+
+    FILE *archivo = fopen("STOCK.dat", "rb");
+    if (archivo == NULL) {
+        cout << "Error al abrir el archivo" << endl;
+        return 1;
+    }
+    
 
     return 0;}
