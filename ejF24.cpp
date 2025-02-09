@@ -17,5 +17,7 @@ int main() {
 
     delete [] p;   // Se libera la memoria asignada a p
     return 0;
+
+    
 }
 // muestra 10, 30, 60 
